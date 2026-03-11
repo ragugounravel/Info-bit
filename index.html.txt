@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JetSet | Premium Hotel Search</title>
+
+<style>
+
+:root{
+--primary:#1e40af;
+--accent:#059669;
+--bg:#f3f7fa;
+--text:#1e293b;
+--border:#e2e8f0;
+}
+
+*{box-sizing:border-box}
+
+body{
+font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:var(--bg);
+margin:0;
+display:flex;
+justify-content:center;
+}
+
+.app{
+width:100%;
+max-width:480px;
+padding:40px 20px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+padding:28px;
+border-radius:22px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+margin-bottom:20px;
+}
+
+/* SEARCH */
+
+.search-row{
+display:flex;
+gap:10px;
+position:relative;
+margin-top:18px;
+}
+
+input{
+flex:1;
+padding:14px;
+border-radius:12px;
+border:2px solid var(--border);
+font-size:15px;
+outline:none;
+}
+
+input:focus{
+border-color:var(--primary);
+}
+
+button{
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+padding:14px 18px;
+}
+
+/* AUTOCOMPLETE */
+
+#suggestions{
+position:absolute;
+top:100%;
+left:0;
+right:90px;
+background:white;
+border:1px solid var(--border);
+border-radius:12px;
+margin-top:6px;
+display:none;
+z-index:10;
+}
+
+.sugg{
+padding:10px 14px;
+cursor:pointer;
+border-bottom:1px solid #f1f5f9;
+}
+
+.sugg:hover{
+background:#f0f7ff;
+color:var(--primary);
+}
+
+/* LOADING */
+
+#loadingView{
+display:none;
+text-align:center;
+}
+
+.search-animation{
+height:90px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.glass{
+font-size:58px;
+animation:scan 2s infinite ease-in-out;
+}
+
+@keyframes scan{
+0%{transform:translate(-25px,-8px)}
+50%{transform:translate(25px,8px)}
+100%{transform:translate(-25px,-8px)}
+}
+
+.fact{
+background:#f8fafc;
+border-left:4px solid var(--primary);
+padding:18px;
+border-radius:14px;
+text-align:left;
+margin-top:18px;
+}
+
+.fact small{
+color:var(--primary);
+font-weight:800;
+letter-spacing:.5px;
+}
+
+.hidden{display:none}
+
+/* RESULTS */
+
+#resultsView{
+display:none;
+}
+
+.hotel{
+background:white;
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px;
+margin-bottom:14px;
+}
+
+.hotel-name{
+font-size:17px;
+font-weight:800;
+color:var(--primary);
+}
+
+.hotel-meta{
+font-size:13px;
+color:#64748b;
+margin:4px 0 10px;
+}
+
+.badges{
+display:flex;
+gap:6px;
+margin-bottom:12px;
+}
+
+.badge{
+background:#f1f5f9;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+font-weight:600;
+}
+
+.price-box{
+border-top:1px dashed #cbd5e1;
+padding-top:12px;
+text-align:right;
+}
+
+.offer{
+color:var(--accent);
+font-size:12px;
+font-weight:800;
+}
+
+.old{
+text-decoration:line-through;
+color:#94a3b8;
+font-size:13px;
+}
+
+.price{
+font-size:22px;
+font-weight:900;
+}
+
+.info{
+font-size:11px;
+color:#64748b;
+}
+
+.btn-action{
+width:100%;
+background:var(--primary);
+color:white;
+padding:11px;
+margin-top:10px;
+border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SEARCH -->
+
+<div id="searchView" class="card">
+
+<h2 style="margin:0">Find Your Next Stay</h2>
+<p style="color:#64748b;margin:6px 0 16px">Search hotels worldwide.</p>
+
+<div class="search-row">
+<input id="destInput" placeholder="Where are you going?" oninput="suggest(this.value)">
+<button class="btn-primary" onclick="startSearch()">Search</button>
+
+<div id="suggestions"></div>
+</div>
+
+</div>
+
+<!-- LOADING -->
+
+<div id="loadingView" class="card">
+
+<div class="search-animation" id="anim">
+<div class="glass">🔍</div>
+</div>
+
+<h3 id="status">Searching for the best deals...</h3>
+
+<div class="fact">
+<small>TRAVEL FACT</small>
+<p id="factText"></p>
+</div>
+
+<button id="showBtn" class="btn-action hidden" style="background:var(--accent)" onclick="showResults()">
+View Results
+</button>
+
+</div>
+
+<!-- RESULTS -->
+
+<div id="resultsView">
+
+<p style="color:#64748b;font-weight:600">2 hotels match your search</p>
+
+<div class="hotel">
+<div class="hotel-name">Spacious Ocean View Condo</div>
+<div class="hotel-meta">Mid-Beach • 2.5 km from centre</div>
+
+<div class="badges">
+<div class="badge">Jacuzzi</div>
+<div class="badge">Sauna</div>
+<div class="badge">Score 6.0</div>
+</div>
+
+<div class="price-box">
+<div class="offer">Amex Offer • 10% off</div>
+<div class="old">BHD 1,520</div>
+<div class="price">BHD 1,368</div>
+<div class="info">3 nights • 2 adults • Incl. taxes</div>
+<button class="btn-action">See Availability</button>
+</div>
+</div>
+
+<div class="hotel">
+<div class="hotel-name">Cozy 2 Bedroom Ocean View</div>
+<div class="hotel-meta">Mid-Beach • 2.5 km from centre</div>
+
+<div class="badges">
+<div class="badge">Water sports</div>
+<div class="badge">Jacuzzi</div>
+<div class="badge">Sauna</div>
+</div>
+
+<div class="price-box">
+<div class="offer">Amex Offer • 10% off</div>
+<div class="old">BHD 1,136</div>
+<div class="price">BHD 1,023</div>
+<div class="info">3 nights • 2 adults • Incl. taxes</div>
+<button class="btn-action">See Availability</button>
+</div>
+</div>
+
+<button onclick="location.reload()" style="background:none;border:none;color:#64748b;cursor:pointer">
+← New search
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const facts=[
+"Japan has capsule hotels where guests sleep in pods.",
+"The Eiffel Tower can grow 15 cm taller in summer.",
+"Iceland has over 130 volcanoes.",
+"Maldives averages only 1.5m above sea level.",
+"The Trans-Siberian Railway is over 9,000 km long."
+];
+
+const places=["Dubai","Doha","Dublin","London","Paris","Iceland"];
+
+function suggest(val){
+
+const box=document.getElementById("suggestions");
+
+if(!val){
+box.style.display="none";
+return;
+}
+
+const res=places.filter(p=>p.toLowerCase().startsWith(val.toLowerCase()));
+
+if(res.length){
+box.innerHTML=res.map(p=>`<div class="sugg" onclick="pick('${p}')">${p}</div>`).join("");
+box.style.display="block";
+}else{
+box.style.display="none";
+}
+
+}
+
+function pick(val){
+document.getElementById("destInput").value=val;
+document.getElementById("suggestions").style.display="none";
+}
+
+function startSearch(){
+
+const val=document.getElementById("destInput").value;
+if(!val)return;
+
+document.getElementById("searchView").style.display="none";
+document.getElementById("loadingView").style.display="block";
+
+document.getElementById("factText").innerText=
+facts[Math.floor(Math.random()*facts.length)];
+
+setTimeout(()=>{
+
+document.getElementById("anim").style.display="none";
+document.getElementById("status").innerHTML="<span style='color:#059669'>✔ Hotels found for your trip</span>";
+document.getElementById("showBtn").classList.remove("hidden");
+
+},4000);
+
+}
+
+function showResults(){
+document.getElementById("loadingView").style.display="none";
+document.getElementById("resultsView").style.display="block";
+}
+
+</script>
+
+</body>
+</html>
+
