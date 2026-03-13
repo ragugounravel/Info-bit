@@ -236,7 +236,7 @@ border-radius:8px;
 <p style="color:#64748b;margin:6px 0 16px">Search hotels worldwide.</p>
 
 <div class="search-row">
-<input id="destInput" placeholder="Where are you going?" oninput="suggest(this.value)">
+<input id="destInput" placeholder="Try searching Dubai, Paris..." oninput="suggest(this.value)">
 <button class="btn-primary" onclick="startSearch()">Search</button>
 
 <div id="suggestions"></div>
@@ -356,8 +356,14 @@ document.getElementById("suggestions").style.display="none";
 
 function startSearch(){
 
-const val=document.getElementById("destInput").value;
-if(!val)return;
+const input=document.getElementById("destInput");
+const val=input.value.trim();
+
+if(!val){
+alert("Please search a destination (Try: Dubai)");
+input.focus();
+return;
+}
 
 document.getElementById("searchView").style.display="none";
 document.getElementById("loadingView").style.display="block";
@@ -384,5 +390,3 @@ document.getElementById("resultsView").style.display="block";
 
 </body>
 </html>
-
-
