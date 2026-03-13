@@ -28,7 +28,7 @@ This turns **conscious waiting → unconscious waiting**.
 - Makes loading screen more interactive 💬  
 - Improves overall user experience ⭐  
 
-## 🔗 Prototype (Search Dubai):  
+## 🔗 Prototype:  
 https://ragugounravel.github.io/Info-bit/
 
 ## 👤 Author
